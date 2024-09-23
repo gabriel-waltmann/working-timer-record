@@ -5,7 +5,7 @@ const router = Router();
 
 router.get('/', (req, res) => {
   res.status(200).json({ message: "API is running!" });
-})
+});
 
 router.use('/workspaces', workspaceRoutes);
 router.use('/workspace-timer', workspaceTimerController);

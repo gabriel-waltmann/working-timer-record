@@ -4,23 +4,25 @@ import { Request, Response } from 'express';
 // import { FindById } from '../../application/use-cases/FindById';
 
 export class WorkspaceTimerController {
-  // constructor(
+  constructor(
   //   private startTimerUseCase: StartTimerUseCase,
   //   private endTimerUseCase: EndTimerUseCase,
   //   private FindById: FindById
-  // ) {}
+  ) {}
 
-  // async startTimer(req: Request, res: Response): Promise<void> {
+  async startTimer(req: Request, res: Response): Promise<void> {
+    console.log("startTimer", req.body);
   //   const { timerId } = req.body;
   //   await this.startTimerUseCase.execute(timerId);
-  //   res.status(200).send('Timer started');
-  // }
+    res.status(200).send('Timer started');
+  }
 
-  // async endTimer(req: Request, res: Response): Promise<void> {
+  async endTimer(req: Request, res: Response): Promise<void> {
+    console.log("endTimer", req.body);
   //   const { timerId } = req.body;
   //   await this.endTimerUseCase.execute(timerId);
-  //   res.status(200).send('Timer ended');
-  // }
+    res.status(200).send('Timer ended');
+  }
 
   // async findById(req: Request, res: Response): Promise<void> {
   //   const { id } = req.params;

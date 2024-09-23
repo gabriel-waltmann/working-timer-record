@@ -22,7 +22,7 @@ const workspaceController = new WorkspaceController(
   deleteWorkspaceUseCase,
   getAllWorkspacesUseCase,
   getWorkspaceByIdUseCase
-)
+);
 
 const router = Router();
 
