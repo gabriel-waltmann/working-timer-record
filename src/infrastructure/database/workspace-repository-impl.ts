@@ -18,4 +18,14 @@ export class MongoWorkspaceRepository implements WorkspaceRepository {
       throw new Error('Could not create workspace'); 
     }
   }
+
+  async retrievesOne(workspaceId: number): Promise<Workspace> {
+    const workspace = await WorkspaceModel.findOne({ id: workspaceId });
+
+    if (!workspace) {
+      throw new Error('Workspace not found');
+    }
+
+    return workspace;
+  }
 }

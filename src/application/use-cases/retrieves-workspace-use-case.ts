@@ -1,9 +1,11 @@
 import { WorkspaceRepository } from "../../domain/repositories/workspace-repository";
 
-export class GetAllWorkspacesUseCase {
+export class RetrievesWorkspacesUseCase {
   constructor(private workspaceRepository: WorkspaceRepository) {}
 
   async execute() {
-    throw new Error('Method not implemented.');
+    const workspaces = await this.workspaceRepository.retrieves();
+
+    return workspaces;
   }
 }

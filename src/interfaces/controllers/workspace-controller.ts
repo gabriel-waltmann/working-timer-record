@@ -18,6 +18,11 @@ export class WorkspaceController {
   async create(req: Request, res: Response): Promise<void> {
     const workspace = await this.createWorkspace.execute(req.body.name);
 
+    if (!workspace) {
+      res.status(500).json({ error: 'Failed to create workspace' });
+      return;
+    }
+
     res.status(201).json({ workspace });
   }
 
@@ -39,9 +44,23 @@ export class WorkspaceController {
     res.status(200).json({});
   }
 
-  async getById(req: Request, res: Response): Promise<void> {
-    console.log("getById", req.params.id);
-    // const workspace = await this.getWorkspaceById.execute(req.params.id);
-    res.status(200).json({});
+  async retrievesOne(req: Request, res: Response): Promise<void> {
+    const id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+      res.status(400).json({ error: 'Invalid ID' });
+
+      return;
+    }
+
+    const workspace = await this.getWorkspaceById.execute(id);
+
+    if (!workspace) {
+      res.status(404).json({ error: 'Workspace not found' });
+
+      return;
+    }
+
+    res.status(200).json({ workspace });
   }
 }
