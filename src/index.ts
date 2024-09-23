@@ -2,12 +2,15 @@ import express from 'express';
 import connectMongoDB from './infrastructure/database/mongoose';
 import { connectRedis } from './infrastructure/redis/redisClient';
 import routes from './interfaces/routes/index';
+import dotenv from 'dotenv';
 
 const app = express();
 
 app.use(express.json());
 
 app.use("/", routes);
+
+dotenv.config();
 
 const startServer = async () => {
   await connectMongoDB();
