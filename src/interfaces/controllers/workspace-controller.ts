@@ -16,7 +16,7 @@ export class WorkspaceController {
   ) {}
 
   async create(req: Request, res: Response): Promise<void> {
-    const workspace = await this.createWorkspace.execute(req.body.name);
+    const workspace = await this.createWorkspace.execute(req.body.name, req.body.priceByHour);
 
     if (!workspace) {
       res.status(500).json({ error: 'Failed to create workspace' });
@@ -35,7 +35,7 @@ export class WorkspaceController {
       return;
     }
 
-    const workspace = await this.updateWorkspace.execute(id, req.body.name);
+    const workspace = await this.updateWorkspace.execute(id, req.body.name, req.body.priceByHour);
 
     if (!workspace) {
       res.status(500).json({ error: 'Failed to update workspace' });

@@ -3,10 +3,11 @@ import { WorkspaceRepository } from '../../domain/repositories/workspace-reposit
 import { Workspace } from '../../domain/entities/workspace';
 
 export class MongoWorkspaceRepository implements WorkspaceRepository {
-  async create(workspaceName: string): Promise<Workspace> {
+  async create(workspaceName: string, priceByHour: number): Promise<Workspace> {
     const workspace = new WorkspaceModel({
       id: Date.now(), 
       name: workspaceName,
+      price_by_hour: priceByHour
     });
 
     try {
@@ -33,10 +34,10 @@ export class MongoWorkspaceRepository implements WorkspaceRepository {
     return workspaces;
   }
 
-  async update(workspaceId: number, workspaceName: string): Promise<Workspace | null> {
+  async update(workspaceId: number, workspaceName: string, priceByHour: number): Promise<Workspace | null> {
     const filter = { id: workspaceId };
 
-    const update = { name: workspaceName };
+    const update = { name: workspaceName, price_by_hour: priceByHour };
 
     return await WorkspaceModel.findOneAndUpdate(filter, update, { new: true });
   }
