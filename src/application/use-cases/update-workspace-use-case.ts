@@ -3,9 +3,9 @@ import { WorkspaceRepository } from "../../domain/repositories/workspace-reposit
 export class UpdateWorkspaceUseCase {
   constructor(private workspaceRepository: WorkspaceRepository) {}
 
-  async execute(workspaceId: string, workspaceName: string) {
-    console.log("update", workspaceId, workspaceName);
+  async execute(workspaceId: number, workspaceName: string) {
+    const workspace = await this.workspaceRepository.update(workspaceId, workspaceName);
 
-    throw new Error('Method not implemented.');
+    return workspace;
   }
 }
