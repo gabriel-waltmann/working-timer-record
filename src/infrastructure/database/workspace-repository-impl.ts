@@ -19,13 +19,29 @@ export class MongoWorkspaceRepository implements WorkspaceRepository {
     }
   }
 
-  async retrievesOne(workspaceId: number): Promise<Workspace> {
+  async retrievesOne(workspaceId: number): Promise<Workspace | null> {
     const workspace = await WorkspaceModel.findOne({ id: workspaceId });
 
-    if (!workspace) {
-      throw new Error('Workspace not found');
-    }
+    if (!workspace) return null;
 
     return workspace;
+  }
+
+  async retrieves(): Promise<Workspace[]> {
+    const workspaces = await WorkspaceModel.find();
+
+    return workspaces;
+  }
+
+  async update(workspaceId: number, workspaceName: string): Promise<Workspace | null> {
+    const filter = { id: workspaceId };
+
+    const update = { name: workspaceName };
+
+    return await WorkspaceModel.findOneAndUpdate(filter, update, { new: true });
+  }
+
+  async delete(workspaceId: number): Promise<void> {
+    await WorkspaceModel.deleteOne({ id: workspaceId });
   }
 }
