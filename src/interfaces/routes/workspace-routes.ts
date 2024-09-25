@@ -1,11 +1,11 @@
 import { Router } from 'express';
 
 import { WorkspaceController } from '../controllers/workspace-controller';
-import { CreateWorkspaceUseCase } from '../../application/use-cases/create-workspace-use-case';
-import { UpdateWorkspaceUseCase } from '../../application/use-cases/update-workspace-use-case';
-import { RetrievesWorkspacesUseCase } from '../../application/use-cases/retrieves-workspace-use-case';
-import { RetrievesOneWorkspaceUseCase } from '../../application/use-cases/retrieves-one-workspace-use-case';
-import { DeleteWorkspaceUseCase } from '../../application/use-cases/delete-workspace-use-case';
+import { CreateWorkspaceUseCase } from '../../application/use-cases/workspace/create-workspace-use-case';
+import { UpdateWorkspaceUseCase } from '../../application/use-cases/workspace/update-workspace-use-case';
+import { RetrievesWorkspacesUseCase } from '../../application/use-cases/workspace/retrieves-workspace-use-case';
+import { RetrievesOneWorkspaceUseCase } from '../../application/use-cases/workspace/retrieves-one-workspace-use-case';
+import { DeleteWorkspaceUseCase } from '../../application/use-cases/workspace/delete-workspace-use-case';
 import { MongoWorkspaceRepository } from '../../infrastructure/database/workspace-repository-impl';
 
 const workspaceRepository = new MongoWorkspaceRepository();

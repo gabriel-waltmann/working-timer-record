@@ -1,4 +1,4 @@
-import { WorkspaceRepository } from "../../domain/repositories/workspace-repository";
+import { WorkspaceRepository } from "../../../domain/repositories/workspace-repository";
 
 export class DeleteWorkspaceUseCase {
   constructor(private workspaceRepository: WorkspaceRepository) {}

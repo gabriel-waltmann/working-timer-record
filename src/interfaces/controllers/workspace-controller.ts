@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 
-import { CreateWorkspaceUseCase } from '../../application/use-cases/create-workspace-use-case';
-import { UpdateWorkspaceUseCase } from '../../application/use-cases/update-workspace-use-case';
-import { DeleteWorkspaceUseCase } from '../../application/use-cases/delete-workspace-use-case';
-import { RetrievesWorkspacesUseCase } from '../../application/use-cases/retrieves-workspace-use-case';
-import { RetrievesOneWorkspaceUseCase } from '../../application/use-cases/retrieves-one-workspace-use-case';
+import { CreateWorkspaceUseCase } from '../../application/use-cases/workspace/create-workspace-use-case';
+import { UpdateWorkspaceUseCase } from '../../application/use-cases/workspace/update-workspace-use-case';
+import { DeleteWorkspaceUseCase } from '../../application/use-cases/workspace/delete-workspace-use-case';
+import { RetrievesWorkspacesUseCase } from '../../application/use-cases/workspace/retrieves-workspace-use-case';
+import { RetrievesOneWorkspaceUseCase } from '../../application/use-cases/workspace/retrieves-one-workspace-use-case';
 
 export class WorkspaceController {
   constructor(
@@ -55,7 +55,7 @@ export class WorkspaceController {
 
     await this.deleteWorkspace.execute(id);
 
-    res.status(204).send();
+    res.status(204).json({ message: 'Workspace deleted' });
   }
 
   async retrieves(req: Request, res: Response): Promise<void> {
