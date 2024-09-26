@@ -7,6 +7,8 @@
   "esModuleInterop": true,
   "scripts": {
     "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "build": "tsc",
     "format": "prettier --write .",
     "lint": "eslint . ",
     "lint:fix": "eslint . --fix "
