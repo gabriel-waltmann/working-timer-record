@@ -31,9 +31,11 @@ export class WorkspaceTimerController {
   async end(req: Request, res: Response): Promise<void> {
     const { workspaceId } = req.body; 
 
-    await this.endTimerUseCase.execute(workspaceId);
+    const timer = await this.endTimerUseCase.execute(workspaceId);
 
-    res.status(204).json({ message: 'Timer ended' });
+    if (timer) res.status(204).json(timer);
+
+    else res.status(404).json({ error: 'Timer not found' });
   }
 
   async retrievesOne(req: Request, res: Response): Promise<void> {
