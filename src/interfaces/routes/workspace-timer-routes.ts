@@ -6,6 +6,7 @@ import { WorkspaceTimerController } from '../controllers/workspace-timer-control
 import { MongoWorkspaceTimerRepository } from '../../infrastructure/database/workspace-timer-repository-impl';
 import { RetrievesTimerUseCase } from '../../application/use-cases/workspace-timer/retrieves-timer-use-case';
 import { DeleteTimerUseCase } from '../../application/use-cases/workspace-timer/delete-timer-use-case';
+import { ExportWorkspaceTimerUseCase } from '../../application/use-cases/workspace-timer/export-workspace-timer-use-case';
 
 const workspaceTimerRepository = new MongoWorkspaceTimerRepository();
 
@@ -14,6 +15,7 @@ const endTimerUseCase = new EndTimerUseCase(workspaceTimerRepository);
 const retrievesOneTimerUseCase = new RetrievesOneTimerUseCase(workspaceTimerRepository);
 const retrievesTimerUseCase = new RetrievesTimerUseCase(workspaceTimerRepository);
 const deleteTimerUseCase = new DeleteTimerUseCase(workspaceTimerRepository);
+const exportWorkspaceTimerUseCase = new ExportWorkspaceTimerUseCase(workspaceTimerRepository);
 
 const timerController = new WorkspaceTimerController(
   startTimerUseCase, 
@@ -21,6 +23,7 @@ const timerController = new WorkspaceTimerController(
   retrievesOneTimerUseCase,
   retrievesTimerUseCase,
   deleteTimerUseCase,
+  exportWorkspaceTimerUseCase,
 );
 
 const router = Router();
@@ -30,5 +33,6 @@ router.post('/end', timerController.end.bind(timerController));
 router.get('/:id', timerController.retrievesOne.bind(timerController));
 router.delete('/:id', timerController.delete.bind(timerController));
 router.get('/', timerController.retrieves.bind(timerController));
+router.post('/export', timerController.export.bind(timerController));
 
 export default router;

@@ -5,6 +5,7 @@ import { EndTimerUseCase } from '../../application/use-cases/workspace-timer/end
 
 import workspaceTimerQueue from "../queue/workspace-timer-queue";
 import { WorkspaceTimer, WorkspaceTimerStatus } from '../../domain/entities/workspace-timer';
+import exceljs from 'exceljs';
 
 export class MongoWorkspaceTimerRepository implements WorkspaceTimerRepository {
   async start(workspaceId: number): Promise<WorkspaceTimer | null> {
@@ -72,7 +73,6 @@ export class MongoWorkspaceTimerRepository implements WorkspaceTimerRepository {
         { new: true }
       );
 
-
       return workspaceTimer ? workspaceTimer as WorkspaceTimer : null;
     } catch (error) {
       console.error('Error saving timer to MongoDB:', error);
@@ -117,6 +117,70 @@ export class MongoWorkspaceTimerRepository implements WorkspaceTimerRepository {
   async delete(workspaceTimerId: number): Promise<boolean> {
     const deleted = await WorkspaceTimerModel.deleteOne({ id: workspaceTimerId });
 
+    // ! Get the timer from Redis
+    const workspaceTimerJob = await workspaceTimerQueue.getJob(workspaceTimerId);
+
+    // ! Remove the timer from Redis
+    if (workspaceTimerJob && !workspaceTimerJob.processedOn) {        
+      await workspaceTimerJob.remove(); 
+    }
+
     return !!deleted;
+  }
+
+  async export (startDateStr: string, endDateStr: string, workspaceId: number): Promise<exceljs.Workbook | null> {
+    const startTime = new Date(startDateStr);
+    const endTime = new Date(endDateStr);
+
+    const workspace = await WorkspaceModel.findOne({ id: workspaceId });
+
+    if (!workspace) return null;
+
+    // ! has valid startDate endDate and is between startTime and endTime
+    const workspaceTimers = await WorkspaceTimerModel.find({
+      workspace_id: workspaceId,
+      start_time: { $gte: startTime, $lte: endTime },
+    });
+
+    type TSheetContent = {
+      date: string;
+      startTime: string;
+      endTime: string;
+      duration: number;
+    }
+
+    const sheetContent = (): TSheetContent[] => {
+      return workspaceTimers.map((workspaceTimer) => {
+        const startDate = new Date(workspaceTimer.start_time); //  YYYY-MM-DD
+        const endDate = workspaceTimer.end_time ? new Date(workspaceTimer.end_time) : new Date(); //  YYYY-MM-DD
+
+        const date = startDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }); //  DD/MM/YYYY
+        const startTime = startDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); //  HH:MM:SS
+        const endTime = endDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); //  HH:MM:SS
+        const durationCalc = (endDate.getTime() - startDate.getTime()) / 1000 / 60 / 60; //  HH:MM:SS
+        const duration = +durationCalc.toFixed(2); //  HH:MM:SS
+
+        return {
+          date,
+          startTime,
+          endTime,
+          duration,
+        };
+      });
+    };
+
+    const workbook = new exceljs.Workbook();
+
+    const sheet = workbook.addWorksheet(workspace.name);
+    sheet.columns = [
+      { header: 'Data', key: 'date', width: 16 },
+      { header: 'Hora de início', key: 'startTime', width: 16 },
+      { header: 'Hora de término', key: 'endTime', width: 16 },
+      { header: 'Duração (horas)', key: 'duration', width: 16 },
+    ];
+
+    sheet.addRows(sheetContent());
+    
+    return workbook;
   }
 }

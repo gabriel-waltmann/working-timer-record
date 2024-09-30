@@ -5,6 +5,7 @@ import { RetrievesOneTimerUseCase } from '../../application/use-cases/workspace-
 import { RetrievesTimerUseCase } from '../../application/use-cases/workspace-timer/retrieves-timer-use-case';
 import { WorkspaceTimerStatus } from '../../domain/entities/workspace-timer';
 import { DeleteTimerUseCase } from '../../application/use-cases/workspace-timer/delete-timer-use-case';
+import { ExportWorkspaceTimerUseCase } from '../../application/use-cases/workspace-timer/export-workspace-timer-use-case';
 
 export class WorkspaceTimerController {
   constructor(
@@ -13,6 +14,7 @@ export class WorkspaceTimerController {
     private retrievesOneTimerUseCase: RetrievesOneTimerUseCase,
     private retrievesTimerUseCase: RetrievesTimerUseCase,
     private deleteTimerUseCase: DeleteTimerUseCase,
+    private exportWorkspaceTimerUseCase: ExportWorkspaceTimerUseCase,
   ) {}
 
   async start(req: Request, res: Response): Promise<void> {
@@ -78,4 +80,43 @@ export class WorkspaceTimerController {
 
     res.status(204).json({ message: 'Timer deleted' });
   }
+
+  async export(req: Request, res: Response): Promise<void> {
+    const { workspaceId, startDate, endDate } = req.body;
+
+    if (!workspaceId) {
+      res.status(400).json({ error: 'Invalid ID' });
+      return;
+    }
+
+    if (!startDate || !endDate) {
+      res.status(400).json({ error: 'Invalid date' });
+      return;
+    }
+
+    const workbook = await this.exportWorkspaceTimerUseCase.execute(startDate, endDate, workspaceId);
+
+    if (!workbook) {
+      res.status(404).json({ error: 'Internal server error' });
+      return;
+    }
+
+    console.info('workbook created', workbook);
+
+    res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+    res.setHeader("Content-Disposition", "attachment; filename=timer.xlsx");
+
+    workbook.xlsx.write(res).then(() => {
+      res.end();
+    });
+  }
 }
+
+/* 
+curl -sS --location 
+  --request POST 'http://localhost:3000/workspace-timer/export' \
+  --header 'Content-Type: application/json' \
+  --data-raw '{"startDate": "2024-09-01", "endDate": "2024-09-31", "workspaceId": 1727368941748}' \
+  -o exported-file.xlsx
+*/
