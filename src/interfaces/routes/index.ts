@@ -7,12 +7,12 @@ const router = Router();
  * @openapi 
  * /:
  *  get:
+ *    tags: [Core]
  *    summary: Check if API is running
  *    description: Check if API is running
  *    responses:
  *      200:
  *        description: API is running
- *    tags: [API]
  */
 router.get('/', (req, res) => {
   res.status(200).json({ message: "API is running!" });
