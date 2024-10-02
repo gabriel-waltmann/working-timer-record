@@ -28,11 +28,139 @@ const timerController = new WorkspaceTimerController(
 
 const router = Router();
 
+/**
+ * @openapi 
+ * /workspace-timer/start:
+ *  post:
+ *    tags: [WorkspaceTimer]
+ *    summary: Start a new timer
+ *    description: Start a new timer
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/WorkspaceTimerStart'
+ *    responses:
+ *      201:
+ *        description: Timer started
+ *      500:
+ *        description: Server error
+ * */
 router.post('/start', timerController.start.bind(timerController));
+
+/**
+ * @openapi 
+ * /workspace-timer/end:
+ *  post:
+ *    tags: [WorkspaceTimer]
+ *    summary: End a timer
+ *    description: End a timer
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/WorkspaceTimerEnd'
+ *    responses:
+ *      201:
+ *        description: Timer ended
+ *      500:
+ *        description: Server error
+ * */
 router.post('/end', timerController.end.bind(timerController));
+
+/**
+ * @openapi 
+ * /workspace-timer/{id}:
+ *  get:
+ *    tags: [WorkspaceTimer]
+ *    summary: Retrieve a timer
+ *    description: Retrieve a timer
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: Timer ID
+ *    responses:
+ *      200:
+ *        description: Timer retrieved
+ *        content:
+ *          application/json: 
+ *            schema:
+ *              $ref: '#/components/schemas/WorkspaceTimer'
+ *      404:
+ *        description: Timer not found
+ *      500:
+ *        description: Server error
+*/
 router.get('/:id', timerController.retrievesOne.bind(timerController));
+
+/**
+ * @openapi 
+ * /workspace-timer/{id}:
+ *  delete:
+ *    tags: [WorkspaceTimer]
+ *    summary: Delete a timer
+ *    description: Delete a timer
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: Timer ID
+ *    responses:
+ *      204:
+ *        description: Timer deleted
+ *      404:
+ *        description: Timer not found
+ *      500:
+ *        description: Server error
+*/
 router.delete('/:id', timerController.delete.bind(timerController));
+
+/**
+ * @openapi 
+ * /workspace-timer:
+ *  get:
+ *    tags: [WorkspaceTimer]
+ *    summary: Retrieve timers
+ *    description: Retrieve timers
+ *    responses:
+ *      200:
+ *        description: Timers retrieved
+ *        content:
+ *          application/json: 
+ *            schema:
+ *              type: array
+ *              $ref: '#/components/schemas/WorkspaceTimer'
+ *      500:
+ *        description: Server error
+*/
 router.get('/', timerController.retrieves.bind(timerController));
+
+/**
+ * @openapi 
+ * /workspace-timer/export:
+ *  post:
+ *    tags: [WorkspaceTimer]
+ *    summary: Export timer
+ *    description: Gererate a excel file with the timers
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/WorkspaceTimerExport'
+ *    responses:
+ *      201:
+ *        description: Timer exported
+ *      500:
+ *        description: Server error
+ */
 router.post('/export', timerController.export.bind(timerController));
 
 export default router;
