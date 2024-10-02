@@ -3,6 +3,7 @@
     "target": "ES2016",
     "outDir": "dist",
     "module": "commonjs",
+    "resolveJsonModule": true,
     "moduleResolution": "node",
     "strict": true,
     "skipLibCheck": true,
@@ -14,6 +15,6 @@
   "ts-node": { "esm": true },
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Recommended",
-  "include": ["src/**/*", "src/index.ts", "config", "migrations", "types/**/*.d.ts"],
+  "include": ["src/**/*", "src/index.ts", "config", "migrations", "types/**/*.d.ts", "src/swagger/index.ts"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }
