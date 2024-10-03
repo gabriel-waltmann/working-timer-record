@@ -6,9 +6,11 @@ import { RetrievesTimerUseCase } from '../../application/use-cases/workspace-tim
 import { WorkspaceTimerStatus } from '../../domain/entities/workspace-timer';
 import { DeleteTimerUseCase } from '../../application/use-cases/workspace-timer/delete-timer-use-case';
 import { ExportWorkspaceTimerUseCase } from '../../application/use-cases/workspace-timer/export-workspace-timer-use-case';
+import { CreateWorkspaceTimerUseCase } from '../../application/use-cases/workspace-timer/create-workspace-timer-use-case';
 
 export class WorkspaceTimerController {
   constructor(
+    private createWorkspaceTimer: CreateWorkspaceTimerUseCase,
     private startTimerUseCase: StartTimerUseCase,
     private endTimerUseCase: EndTimerUseCase,
     private retrievesOneTimerUseCase: RetrievesOneTimerUseCase,
@@ -16,7 +18,38 @@ export class WorkspaceTimerController {
     private deleteTimerUseCase: DeleteTimerUseCase,
     private exportWorkspaceTimerUseCase: ExportWorkspaceTimerUseCase,
   ) {}
+  
+  async create(req: Request, res: Response): Promise<void> {
+    const { workspaceId, startDate, endDate } = req.body;
 
+    if (!workspaceId) {
+      res.status(400).json({ error: 'Workspace ID is required' });
+      return;
+    }
+
+    if (!startDate || !endDate) {
+      res.status(400).json({ error: 'Start date and end date are required' });
+      return;
+    }
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    if (start > end) {
+      res.status(400).json({ error: 'Start date must be before end date' });
+      return;
+    }
+
+    const timer = await this.createWorkspaceTimer.execute(workspaceId, start, end);
+
+    if (!timer) {
+      res.status(500).json({ error: 'Failed to create timer' });
+      return;
+    }
+
+    res.status(201).json({ timer });
+  }
+  
   async start(req: Request, res: Response): Promise<void> {
     const { workspaceId } = req.body;
 

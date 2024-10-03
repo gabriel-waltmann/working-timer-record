@@ -1,4 +1,5 @@
 import { Router } from 'express';
+
 import { StartTimerUseCase } from '../../application/use-cases/workspace-timer/start-timer-use-case';
 import { EndTimerUseCase } from '../../application/use-cases/workspace-timer/end-timer-use-case';
 import { RetrievesOneTimerUseCase } from '../../application/use-cases/workspace-timer/retrieves-one-timer-use-case';
@@ -7,9 +8,11 @@ import { MongoWorkspaceTimerRepository } from '../../infrastructure/database/wor
 import { RetrievesTimerUseCase } from '../../application/use-cases/workspace-timer/retrieves-timer-use-case';
 import { DeleteTimerUseCase } from '../../application/use-cases/workspace-timer/delete-timer-use-case';
 import { ExportWorkspaceTimerUseCase } from '../../application/use-cases/workspace-timer/export-workspace-timer-use-case';
+import { CreateWorkspaceTimerUseCase } from '../../application/use-cases/workspace-timer/create-workspace-timer-use-case';
 
 const workspaceTimerRepository = new MongoWorkspaceTimerRepository();
 
+const createWorkspaceTimerUseCase = new CreateWorkspaceTimerUseCase(workspaceTimerRepository);
 const startTimerUseCase = new StartTimerUseCase(workspaceTimerRepository);
 const endTimerUseCase = new EndTimerUseCase(workspaceTimerRepository);
 const retrievesOneTimerUseCase = new RetrievesOneTimerUseCase(workspaceTimerRepository);
@@ -18,6 +21,7 @@ const deleteTimerUseCase = new DeleteTimerUseCase(workspaceTimerRepository);
 const exportWorkspaceTimerUseCase = new ExportWorkspaceTimerUseCase(workspaceTimerRepository);
 
 const timerController = new WorkspaceTimerController(
+  createWorkspaceTimerUseCase,
   startTimerUseCase, 
   endTimerUseCase, 
   retrievesOneTimerUseCase,
@@ -27,6 +31,31 @@ const timerController = new WorkspaceTimerController(
 );
 
 const router = Router();
+
+/**
+ * @openapi 
+ * /workspace-timer:
+ *  post:
+ *    tags: [WorkspaceTimer]
+ *    summary: Create a custom timer
+ *    description: Create a custom timer
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/WorkspaceTimerCreate'
+ *    responses:
+ *      201:
+ *        description: Timer created
+ *        content:
+ *            application/json: 
+ *              schema:
+ *                $ref: '#/components/schemas/WorkspaceTimer'
+ *      500:
+ *        description: Server error
+*/
+router.post('/', timerController.create.bind(timerController));
 
 /**
  * @openapi 

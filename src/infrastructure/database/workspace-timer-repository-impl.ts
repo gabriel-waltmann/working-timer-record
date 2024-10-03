@@ -8,6 +8,26 @@ import { WorkspaceTimer, WorkspaceTimerStatus } from '../../domain/entities/work
 import exceljs from 'exceljs';
 
 export class MongoWorkspaceTimerRepository implements WorkspaceTimerRepository {
+  async create(workspaceId: number, start: Date, end: Date): Promise<WorkspaceTimer | null> {
+    const id = String(Date.now());
+
+    try {
+      const workspaceTimer = new WorkspaceTimerModel({
+        id,
+        workspace_id: workspaceId,
+        start_time: start,
+        end_time: end,
+      });
+
+      await workspaceTimer.save();
+
+      return workspaceTimer as WorkspaceTimer;
+    } catch (error) {
+      console.error('Error saving timer to MongoDB:', error);
+      return null;
+    }
+  }
+
   async start(workspaceId: number): Promise<WorkspaceTimer | null> {
     const workspaceTimerId = String(Date.now());
     const startTime = new Date();
