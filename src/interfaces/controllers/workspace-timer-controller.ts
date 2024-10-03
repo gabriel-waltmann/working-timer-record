@@ -7,10 +7,12 @@ import { WorkspaceTimerStatus } from '../../domain/entities/workspace-timer';
 import { DeleteTimerUseCase } from '../../application/use-cases/workspace-timer/delete-timer-use-case';
 import { ExportWorkspaceTimerUseCase } from '../../application/use-cases/workspace-timer/export-workspace-timer-use-case';
 import { CreateWorkspaceTimerUseCase } from '../../application/use-cases/workspace-timer/create-workspace-timer-use-case';
+import { UpdateWorkspaceTimerUseCase } from '../../application/use-cases/workspace-timer/update-workspace-timer-use-case';
 
 export class WorkspaceTimerController {
   constructor(
     private createWorkspaceTimer: CreateWorkspaceTimerUseCase,
+    private updateWorkspaceTimer: UpdateWorkspaceTimerUseCase,
     private startTimerUseCase: StartTimerUseCase,
     private endTimerUseCase: EndTimerUseCase,
     private retrievesOneTimerUseCase: RetrievesOneTimerUseCase,
@@ -48,6 +50,49 @@ export class WorkspaceTimerController {
     }
 
     res.status(201).json({ timer });
+  }
+
+  async update(req: Request, res: Response): Promise<void> {
+    const workspaceTimerId = parseInt(req.params.id);
+
+    if (isNaN(workspaceTimerId)) {
+      res.status(400).json({ error: 'Invalid ID' });
+      return;
+    }
+
+    const { workspaceId, startDate, endDate } = req.body;
+
+    if (!workspaceTimerId) {
+      res.status(400).json({ error: 'Workspace timer ID is required' });
+      return;
+    }
+
+    if (!workspaceId) {
+      res.status(400).json({ error: 'Workspace ID is required' });
+      return;
+    }
+
+    if (!startDate || !endDate) {
+      res.status(400).json({ error: 'Start date and end date are required' });
+      return;
+    }
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    if (start > end) {
+      res.status(400).json({ error: 'Start date must be before end date' });
+      return;
+    }
+
+    const timer = await this.updateWorkspaceTimer.execute(workspaceTimerId, workspaceId, start, end);
+
+    if (!timer) {
+      res.status(404).json({ error: 'Timer not found' });
+      return;
+    }
+
+    res.status(200).json({ timer });
   }
   
   async start(req: Request, res: Response): Promise<void> {
@@ -147,9 +192,9 @@ export class WorkspaceTimerController {
 }
 
 /* 
-curl -sS --location 
+curl -sS --location \                 ✔ 
   --request POST 'http://localhost:3000/workspace-timer/export' \
   --header 'Content-Type: application/json' \
-  --data-raw '{"startDate": "2024-09-01", "endDate": "2024-09-31", "workspaceId": 1727368941748}' \
+  --data-raw '{"startDate": "2024-10-01", "endDate": "2024-10-31", "workspaceId": 1727368941748}' \
   -o exported-file.xlsx
 */

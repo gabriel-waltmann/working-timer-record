@@ -28,6 +28,21 @@ export class MongoWorkspaceTimerRepository implements WorkspaceTimerRepository {
     }
   }
 
+  async update(workspaceTimerId: number, workspaceId: number, start: Date, end: Date): Promise<WorkspaceTimer | null> {
+    try {
+      const workspaceTimer = await WorkspaceTimerModel.findOneAndUpdate(
+        { id: workspaceTimerId },
+        { workspace_id: workspaceId, start_time: start, end_time: end },
+        { new: true }
+      );
+
+      return workspaceTimer as WorkspaceTimer;
+    } catch (error) {
+      console.error('Error updating timer in MongoDB:', error);
+      return null;
+    }
+  } 
+
   async start(workspaceId: number): Promise<WorkspaceTimer | null> {
     const workspaceTimerId = String(Date.now());
     const startTime = new Date();

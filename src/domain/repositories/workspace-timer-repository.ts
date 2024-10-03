@@ -2,7 +2,8 @@ import { WorkspaceTimer, WorkspaceTimerStatus } from "../entities/workspace-time
 import exceljs from 'exceljs';
 
 export interface WorkspaceTimerRepository {
-  create(workspaceTimerId: number, start: Date, end: Date): Promise<WorkspaceTimer | null>;
+  create(workspaceId: number, start: Date, end: Date): Promise<WorkspaceTimer | null>;
+  update(workspaceTimerId: number, workspaceId: number, start: Date, end: Date): Promise<WorkspaceTimer | null>;
   start(workspaceId: number): Promise<WorkspaceTimer | null>;
   end(workspaceTimerId: number): Promise<WorkspaceTimer | null>;
   retrievesOne(workspaceTimerId: number): Promise<WorkspaceTimer | null>;

@@ -9,10 +9,12 @@ import { RetrievesTimerUseCase } from '../../application/use-cases/workspace-tim
 import { DeleteTimerUseCase } from '../../application/use-cases/workspace-timer/delete-timer-use-case';
 import { ExportWorkspaceTimerUseCase } from '../../application/use-cases/workspace-timer/export-workspace-timer-use-case';
 import { CreateWorkspaceTimerUseCase } from '../../application/use-cases/workspace-timer/create-workspace-timer-use-case';
+import { UpdateWorkspaceTimerUseCase } from '../../application/use-cases/workspace-timer/update-workspace-timer-use-case';
 
 const workspaceTimerRepository = new MongoWorkspaceTimerRepository();
 
 const createWorkspaceTimerUseCase = new CreateWorkspaceTimerUseCase(workspaceTimerRepository);
+const updateWorkspaceTimerUseCase = new UpdateWorkspaceTimerUseCase(workspaceTimerRepository);
 const startTimerUseCase = new StartTimerUseCase(workspaceTimerRepository);
 const endTimerUseCase = new EndTimerUseCase(workspaceTimerRepository);
 const retrievesOneTimerUseCase = new RetrievesOneTimerUseCase(workspaceTimerRepository);
@@ -22,6 +24,7 @@ const exportWorkspaceTimerUseCase = new ExportWorkspaceTimerUseCase(workspaceTim
 
 const timerController = new WorkspaceTimerController(
   createWorkspaceTimerUseCase,
+  updateWorkspaceTimerUseCase,
   startTimerUseCase, 
   endTimerUseCase, 
   retrievesOneTimerUseCase,
@@ -52,10 +55,48 @@ const router = Router();
  *            application/json: 
  *              schema:
  *                $ref: '#/components/schemas/WorkspaceTimer'
+ *      400:
+ *        description: Bad request
  *      500:
  *        description: Server error
 */
 router.post('/', timerController.create.bind(timerController));
+
+/**
+ * @openapi
+ * /workspace-timer/:id:
+ *  put:
+ *    tags: [WorkspaceTimer]
+ *    summary: Update a timer
+ *    description: Update a timer
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: Timer ID
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/WorkspaceTimerUpdate'
+ *    responses:
+ *      200:
+ *        description: Timer updated
+ *        content:
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/WorkspaceTimer'
+ *      404:
+ *        description: Timer not found
+ *      400:
+ *        description: Bad request
+ *      500:
+ *        description: Server error
+ */
+router.put('/:id', timerController.update.bind(timerController));
 
 /**
  * @openapi 
