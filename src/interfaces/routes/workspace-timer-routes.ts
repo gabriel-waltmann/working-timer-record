@@ -112,7 +112,7 @@ router.put('/:id', timerController.update.bind(timerController));
  *          schema:
  *            $ref: '#/components/schemas/WorkspaceTimerStart'
  *    responses:
- *      201:
+ *      200:
  *        description: Timer started
  *      500:
  *        description: Server error
@@ -133,8 +133,10 @@ router.post('/start', timerController.start.bind(timerController));
  *          schema:
  *            $ref: '#/components/schemas/WorkspaceTimerEnd'
  *    responses:
- *      201:
+ *      204:
  *        description: Timer ended
+ *      404:
+ *        description: Timer not found
  *      500:
  *        description: Server error
  * */

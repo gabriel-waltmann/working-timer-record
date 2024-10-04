@@ -109,9 +109,9 @@ export class WorkspaceTimerController {
   }
 
   async end(req: Request, res: Response): Promise<void> {
-    const { workspaceId } = req.body; 
+    const { workspaceTimerId } = req.body; 
 
-    const timer = await this.endTimerUseCase.execute(workspaceId);
+    const timer = await this.endTimerUseCase.execute(workspaceTimerId);
 
     if (timer) res.status(204).json(timer);
 
