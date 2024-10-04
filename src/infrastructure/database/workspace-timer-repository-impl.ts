@@ -214,7 +214,15 @@ export class MongoWorkspaceTimerRepository implements WorkspaceTimerRepository {
       { header: 'Duração (horas)', key: 'duration', width: 16 },
     ];
 
-    sheet.addRows(sheetContent());
+    const rows = sheetContent();
+    const totalDuration = rows.reduce((acc, row) => acc + row.duration, 0);
+    const totalPrice = totalDuration * workspace.price_by_hour;
+
+    sheet.addRows(rows);
+    sheet.addRow({ date: '', startTime: '', endTime: '', duration: '' });
+    sheet.addRow({ date: 'Total de horas', startTime: '', endTime: '', duration: totalDuration });
+    sheet.addRow({ date: 'Valor hora', startTime: '', endTime: '', duration: `R$${workspace.price_by_hour.toFixed(2)}` });
+    sheet.addRow({ date: 'Total: ', startTime: '', endTime: '', duration: `R$${totalPrice.toFixed(2)}` });
     
     return workbook;
   }
