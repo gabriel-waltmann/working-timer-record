@@ -12,7 +12,7 @@ fi
 echo "workspaceTimerId: $workspaceTimerId"
 
 # Make a POST request and capture the HTTP response status
-response=$(curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:3000/workspace-timer/end -d "{\"workspaceTimerId\": \"$workspaceTimerId\"}" -H "Content-Type: application/json")
+response=$(curl -s -o /dev/null -w "%{http_code}" -X POST https://working-timer-record.onrender.com/workspace-timer/end -d "{\"workspaceTimerId\": \"$workspaceTimerId\"}" -H "Content-Type: application/json")
 echo $response
 
 # Check if the response status is 204

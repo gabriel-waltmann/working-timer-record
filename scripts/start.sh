@@ -1,9 +1,9 @@
 #!/bin/bash
 
-WORKSPACE_ID=1727139984980
+WORKSPACE_ID=1727368941748
 
 # Make a POST request and capture the response (assuming the response contains JSON with a field "workspaceTimerId")
-response=$(curl -s -X POST http://localhost:3000/workspace-timer/start -d '{"workspaceId": "'$WORKSPACE_ID'"}' -H "Content-Type: application/json")
+response=$(curl -s -X POST https://working-timer-record.onrender.com/workspace-timer/start -d '{"workspaceId": "'$WORKSPACE_ID'"}' -H "Content-Type: application/json")
 
 # Extract the workspaceTimerId from the response using jq (make sure jq is installed)
 workspaceTimerId=$(echo $response | jq -r '.timer.id')

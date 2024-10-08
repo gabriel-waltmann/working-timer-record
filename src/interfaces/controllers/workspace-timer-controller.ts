@@ -179,15 +179,13 @@ export class WorkspaceTimerController {
       return;
     }
 
-    console.info('workbook created', workbook);
-
     res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 
     res.setHeader("Content-Disposition", "attachment; filename=timer.xlsx");
 
-    workbook.xlsx.write(res).then(() => {
-      res.end();
-    });
+    await workbook.xlsx.write(res);
+    
+    res.status(201).json({ message: 'Timer exported' });  
   }
 }
 

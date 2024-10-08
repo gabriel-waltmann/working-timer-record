@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Make a GET request and capture the response STATUS
-response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/)
+response=$(curl -s -o /dev/null -w "%{http_code}" https://working-timer-record.onrender.com)
 
 # Check if the response status is 200
 if [ "$response" -ne 200 ]; then

@@ -175,7 +175,8 @@ export class MongoWorkspaceTimerRepository implements WorkspaceTimerRepository {
     const workspaceTimers = await WorkspaceTimerModel.find({
       workspace_id: workspaceId,
       start_time: { $gte: startTime, $lte: endTime },
-    });
+      end_time: { $ne: null },
+    }).sort( { 'start_time': 'asc' } );
 
     type TSheetContent = {
       date: string;
@@ -185,9 +186,9 @@ export class MongoWorkspaceTimerRepository implements WorkspaceTimerRepository {
     }
 
     const sheetContent = (): TSheetContent[] => {
-      return workspaceTimers.map((workspaceTimer) => {
+      const content = workspaceTimers.map((workspaceTimer) => {
         const startDate = new Date(workspaceTimer.start_time); //  YYYY-MM-DD
-        const endDate = workspaceTimer.end_time ? new Date(workspaceTimer.end_time) : new Date(); //  YYYY-MM-DD
+        const endDate = new Date(workspaceTimer.end_time as Date); //  YYYY-MM-DD
 
         const date = startDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }); //  DD/MM/YYYY
         const startTime = startDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); //  HH:MM:SS
@@ -202,6 +203,8 @@ export class MongoWorkspaceTimerRepository implements WorkspaceTimerRepository {
           duration,
         };
       });
+      
+      return content;
     };
 
     const workbook = new exceljs.Workbook();
