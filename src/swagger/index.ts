@@ -36,9 +36,9 @@ const swaggerSpec = swaggerJsdoc(options);
 export default (app: Express) => {
   app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
-  app.get('/docs.json', (req: Request, res: Response) => {
+  app.get('/docs.json', (req: Request, res: Response): Response => {
     res.setHeader('Content-Type', 'application/json');
-    res.send(swaggerSpec);
+    return res.send(swaggerSpec);
   });
 
   console.info('Swagger docs available at http://localhost:3000/api-docs');
