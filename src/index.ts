@@ -12,12 +12,16 @@ app.use("/", routes);
 
 dotenv.config();
 
+const port = process.env.PORT || 3000;
+
+console.log(port);
+
 const startServer = async () => {
   await connectMongoDB();
 
   swagger(app);
 
-  app.listen(3000, () => {
+  app.listen(port, () => {
     console.info('Server is running on port 3000');
   });
 };
