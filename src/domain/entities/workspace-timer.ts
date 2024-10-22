@@ -7,7 +7,7 @@ export class WorkspaceTimer {
   constructor(
     public id: number,
     public workspace_id: number,
-    public start_time: Date,
-    public end_time: Date | undefined,
+    public start_time: Date | string,
+    public end_time: Date | string | undefined,
   ) {}
 }

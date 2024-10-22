@@ -2,9 +2,9 @@ import { WorkspaceTimer } from "../../../domain/entities/workspace-timer";
 import { WorkspaceTimerRepository } from "../../../domain/repositories/workspace-timer-repository";
 
 export class UpdateWorkspaceTimerUseCase {
-  constructor(private workspaceTimerRepository: WorkspaceTimerRepository) {}
+  constructor(readonly workspaceTimerRepository: WorkspaceTimerRepository) {}
 
-  async execute(workspaceTimerId: number, workspaceId: number, start: Date, end: Date): Promise<WorkspaceTimer | null> {
-    return await this.workspaceTimerRepository.update(workspaceTimerId, workspaceId, start, end);
+  async execute(workspace_timer_id: number, workspace_id?: number, start_time?: Date, end_time?: Date): Promise<WorkspaceTimer | null> {
+    return await this.workspaceTimerRepository.update(workspace_timer_id, workspace_id, start_time, end_time);
   }
 }

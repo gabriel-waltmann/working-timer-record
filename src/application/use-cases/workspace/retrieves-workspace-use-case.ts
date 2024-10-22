@@ -1,7 +1,7 @@
 import { WorkspaceRepository } from "../../../domain/repositories/workspace-repository";
 
 export class RetrievesWorkspacesUseCase {
-  constructor(private workspaceRepository: WorkspaceRepository) {}
+  constructor(readonly workspaceRepository: WorkspaceRepository) {}
 
   async execute() {
     const workspaces = await this.workspaceRepository.retrieves();

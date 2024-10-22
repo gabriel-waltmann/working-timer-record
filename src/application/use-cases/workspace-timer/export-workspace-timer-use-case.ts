@@ -2,9 +2,9 @@ import { WorkspaceTimerRepository } from "../../../domain/repositories/workspace
 import exceljs from 'exceljs';
 
 export class ExportWorkspaceTimerUseCase {
-  constructor(private workspaceTimerRepository: WorkspaceTimerRepository) {}
+  constructor(readonly workspaceTimerRepository: WorkspaceTimerRepository) {}
 
-  async execute(startDateStr: string, endDateStr: string, workspaceId: number): Promise<exceljs.Workbook | null> {
-    return await this.workspaceTimerRepository.export(startDateStr, endDateStr, workspaceId);
+  async execute(start_time: Date, end_time: Date, workspaceId: number): Promise<exceljs.Workbook | null> {
+    return await this.workspaceTimerRepository.export(start_time, end_time, workspaceId);
   }
 }

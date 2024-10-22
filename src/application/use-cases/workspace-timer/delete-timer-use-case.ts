@@ -2,7 +2,7 @@ import { WorkspaceTimerRepository } from "../../../domain/repositories/workspace
 
 
 export class DeleteTimerUseCase {
-  constructor(private workspaceTimerRepository: WorkspaceTimerRepository) {}
+  constructor(readonly workspaceTimerRepository: WorkspaceTimerRepository) {}
 
   async execute(workspaceTimerId: number): Promise<boolean> {
     return await this.workspaceTimerRepository.delete(workspaceTimerId);

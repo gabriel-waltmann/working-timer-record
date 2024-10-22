@@ -1,7 +1,7 @@
 import { WorkspaceTimerRepository } from "../../../domain/repositories/workspace-timer-repository";
 
 export class RetrievesOneTimerUseCase {
-  constructor(private workspaceTimerRepository: WorkspaceTimerRepository) {}
+  constructor(readonly workspaceTimerRepository: WorkspaceTimerRepository) {}
 
   async execute(id: number) {
     return await this.workspaceTimerRepository.retrievesOne(id);

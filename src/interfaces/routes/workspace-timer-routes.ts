@@ -1,7 +1,5 @@
 import { Router } from 'express';
 
-import { StartTimerUseCase } from '../../application/use-cases/workspace-timer/start-timer-use-case';
-import { EndTimerUseCase } from '../../application/use-cases/workspace-timer/end-timer-use-case';
 import { RetrievesOneTimerUseCase } from '../../application/use-cases/workspace-timer/retrieves-one-timer-use-case';
 import { WorkspaceTimerController } from '../controllers/workspace-timer-controller';
 import { MongoWorkspaceTimerRepository } from '../../infrastructure/database/workspace-timer-repository-impl';
@@ -15,8 +13,6 @@ const workspaceTimerRepository = new MongoWorkspaceTimerRepository();
 
 const createWorkspaceTimerUseCase = new CreateWorkspaceTimerUseCase(workspaceTimerRepository);
 const updateWorkspaceTimerUseCase = new UpdateWorkspaceTimerUseCase(workspaceTimerRepository);
-const startTimerUseCase = new StartTimerUseCase(workspaceTimerRepository);
-const endTimerUseCase = new EndTimerUseCase(workspaceTimerRepository);
 const retrievesOneTimerUseCase = new RetrievesOneTimerUseCase(workspaceTimerRepository);
 const retrievesTimerUseCase = new RetrievesTimerUseCase(workspaceTimerRepository);
 const deleteTimerUseCase = new DeleteTimerUseCase(workspaceTimerRepository);
@@ -25,8 +21,6 @@ const exportWorkspaceTimerUseCase = new ExportWorkspaceTimerUseCase(workspaceTim
 const timerController = new WorkspaceTimerController(
   createWorkspaceTimerUseCase,
   updateWorkspaceTimerUseCase,
-  startTimerUseCase, 
-  endTimerUseCase, 
   retrievesOneTimerUseCase,
   retrievesTimerUseCase,
   deleteTimerUseCase,
@@ -97,50 +91,6 @@ router.post('/', timerController.create.bind(timerController));
  *        description: Server error
  */
 router.put('/:id', timerController.update.bind(timerController));
-
-/**
- * @openapi 
- * /workspace-timer/start:
- *  post:
- *    tags: [WorkspaceTimer]
- *    summary: Start a new timer
- *    description: Start a new timer
- *    requestBody:
- *      required: true
- *      content:
- *        application/json:
- *          schema:
- *            $ref: '#/components/schemas/WorkspaceTimerStart'
- *    responses:
- *      200:
- *        description: Timer started
- *      500:
- *        description: Server error
- * */
-router.post('/start', timerController.start.bind(timerController));
-
-/**
- * @openapi 
- * /workspace-timer/end:
- *  post:
- *    tags: [WorkspaceTimer]
- *    summary: End a timer
- *    description: End a timer
- *    requestBody:
- *      required: true
- *      content:
- *        application/json:
- *          schema:
- *            $ref: '#/components/schemas/WorkspaceTimerEnd'
- *    responses:
- *      204:
- *        description: Timer ended
- *      404:
- *        description: Timer not found
- *      500:
- *        description: Server error
- * */
-router.post('/end', timerController.end.bind(timerController));
 
 /**
  * @openapi 
