@@ -6,6 +6,7 @@ import { DeleteTimerUseCase } from '../../application/use-cases/workspace-timer/
 import { ExportWorkspaceTimerUseCase } from '../../application/use-cases/workspace-timer/export-workspace-timer-use-case';
 import { CreateWorkspaceTimerUseCase } from '../../application/use-cases/workspace-timer/create-workspace-timer-use-case';
 import { UpdateWorkspaceTimerUseCase } from '../../application/use-cases/workspace-timer/update-workspace-timer-use-case';
+import DateUtils from '../../shared/utils/date';
 
 export class WorkspaceTimerController {
   constructor(
@@ -18,27 +19,45 @@ export class WorkspaceTimerController {
   ) {}
   
   async create(req: Request, res: Response): Promise<Response> {
-    const workspace_id = parseInt(req.body.workspace_id);
-    const start_time = req.body.start_time ? new Date(req.body.start_time) : undefined;
-    const end_time = req.body.end_time ? new Date(req.body.end_time) : undefined;
+    const { workspace_id, start_time, end_time, time_zone } = req.body;
+    const dateUtils = new DateUtils();
 
-    if (isNaN(workspace_id)) {
+    if (!workspace_id) {
       return res.status(400).json({ error: 'Workspace ID is required' });
     }
 
-    if (start_time && end_time && start_time > end_time) {
-      return res.status(400).json({ error: 'Start date must be before end date' });
+    if (isNaN(Number(workspace_id))) {
+      return res.status(400).json({ error: 'Invalid workspace ID' });
     }
 
-    if (typeof start_time === 'string' && start_time === "Invalid Date") {
+    if (!time_zone) {
+      return res.status(400).json({ error: 'Time zone is required' });
+    }
+
+    if (time_zone !== "America/Sao_Paulo" && time_zone !== "UTC") {
+      return res.status(400).json({ error: 'Invalid time zone' });
+    }
+
+    if (!start_time) {
+      return res.status(400).json({ error: 'Start date is required' });
+    }
+
+    const start_time_iso = dateUtils.BRtoISO(start_time, time_zone);
+
+    if (!start_time_iso) {
       return res.status(400).json({ error: 'Start date is invalid' });
     }
 
-    if (typeof end_time === 'string' && end_time === "Invalid Date") {
-      return res.status(400).json({ error: 'End date is invalid' });
+    const end_time_iso = end_time ? dateUtils.BRtoISO(end_time, time_zone) ?? undefined : undefined;
+    if (end_time && !end_time_iso) {
+      return res.status(400).json({ error: 'Invalid end date' });
     }
 
-    const timer = await this.createWorkspaceTimer.execute(workspace_id, start_time, end_time);
+    if (start_time_iso && end_time_iso && new Date(start_time_iso) > new Date(end_time_iso)) {
+      return res.status(400).json({ error: 'Start date must be before end date' });
+    }
+
+    const timer = await this.createWorkspaceTimer.execute(workspace_id, start_time_iso, end_time_iso);
 
     if (!timer) {
       return res.status(500).json({ error: 'Failed to create timer' });
@@ -48,28 +67,47 @@ export class WorkspaceTimerController {
   }
 
   async update(req: Request, res: Response): Promise<Response> {
-    const workspace_timer_id = parseInt(req.params.id);
-    const workspace_id = req.body.workspace_id ? parseInt(req.body.workspace_id) : undefined;
-    const start_time = req.body.start_time ? new Date(req.body.start_time) : undefined;
-    const end_time = req.body.end_time ? new Date(req.body.end_time) : undefined;
+    const { workspace_id, start_time, end_time, time_zone } = req.body;
+    const { workspace_timer_id } = req.params;
+    const dateUtils = new DateUtils();
 
-    if (isNaN(workspace_timer_id)) {
+    if (!workspace_timer_id) {
       return res.status(400).json({ error: 'Workspace timer ID is required' });
     }
 
-    if (typeof start_time === 'string' && start_time === "Invalid Date") {
+    const workspace_timer_id_number = Number(workspace_timer_id);
+    if (isNaN(workspace_timer_id_number)) {
+      return res.status(400).json({ error: 'Invalid workspace timer ID' });
+    }
+
+    if (workspace_id && isNaN(Number(workspace_id))) {
+      return res.status(400).json({ error: 'Invalid workspace ID' });
+    }
+
+    if (!time_zone) {
+      return res.status(400).json({ error: 'Time zone is required' });
+    }
+
+    if (time_zone !== "America/Sao_Paulo" && time_zone !== "UTC") {
+      return res.status(400).json({ error: 'Invalid time zone' });
+    }
+
+    if (!start_time) {
+      return res.status(400).json({ error: 'Start date is required' });
+    }
+
+    const start_time_iso = dateUtils.BRtoISO(start_time, time_zone);
+
+    if (!start_time_iso) {
       return res.status(400).json({ error: 'Start date is invalid' });
     }
 
-    if (typeof end_time === 'string' && end_time === "Invalid Date") {
-      return res.status(400).json({ error: 'End date is invalid' });
+    const end_time_iso = end_time ? dateUtils.BRtoISO(end_time, time_zone) ?? undefined : undefined;
+    if (end_time && !end_time_iso) {
+      return res.status(400).json({ error: 'Invalid end date' });
     }
 
-    if (end_time && start_time && start_time > end_time) {
-      return res.status(400).json({ error: 'Start date must be before end date' });
-    }
-
-    const timer = await this.updateWorkspaceTimer.execute(workspace_timer_id, workspace_id, start_time, end_time);
+    const timer = await this.updateWorkspaceTimer.execute(workspace_timer_id_number, workspace_id, start_time_iso, end_time_iso);
 
     if (!timer) {
       return res.status(404).json({ error: 'Timer not found' });

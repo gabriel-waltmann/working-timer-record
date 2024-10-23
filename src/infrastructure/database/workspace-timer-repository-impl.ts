@@ -1,47 +1,37 @@
 import WorkspaceTimerModel from '../database/models/workspace-timer';
 import WorkspaceModel from '../database/models/workspace';
 import { WorkspaceTimerRepository } from "../../domain/repositories/workspace-timer-repository";
-import * as dateUtil from '../../shared/utils/date';
 import workspaceTimerQueue from "../queue/workspace-timer-queue";
 import { WorkspaceTimer, WorkspaceTimerStatus } from '../../domain/entities/workspace-timer';
 import exceljs from 'exceljs';
 
 export class MongoWorkspaceTimerRepository implements WorkspaceTimerRepository {
-  async create(workspace_id: number, start_time?: Date, end_time?: Date): Promise<WorkspaceTimer | null> {
+  async create(workspace_id: number, start_time?: string, end_time?: string): Promise<WorkspaceTimer | null> {
     const id = String(Date.now());  
-    const start_time_iso = start_time ? start_time.toISOString() : new Date().toISOString();
-    const end_time_iso = end_time ? end_time.toISOString() : undefined;
 
     try {
       const workspaceTimer = new WorkspaceTimerModel({
         id,
         workspace_id,
-        start_time: start_time_iso,
-        end_time: end_time_iso,
+        start_time,
+        end_time,
       });
 
       await workspaceTimer.save();
 
-      return ({
-        id: Number(id),
-        workspace_id,
-        start_time: dateUtil.toBR(new Date(start_time_iso)),
-        end_time: end_time_iso ? dateUtil.toBR(new Date(end_time_iso)) : undefined,
-      });
+      return workspaceTimer as WorkspaceTimer;
     } catch (error) {
       console.error('Error saving timer to MongoDB:', error);
       return null;
     }
   }
 
-  async update(workspace_timer_id: number, workspace_id?: number, start_time?: Date, end_time?: Date): Promise<WorkspaceTimer | null> {
-    const start_time_iso = start_time ? start_time.toISOString() : undefined;
-    const end_time_iso = end_time ? end_time.toISOString() : new Date().toISOString();
+  async update(workspace_timer_id: number, workspace_id?: number, start_time?: string, end_time?: string): Promise<WorkspaceTimer | null> {
 
     try {
       const workspaceTimer = await WorkspaceTimerModel.findOneAndUpdate(
         { id: workspace_timer_id },
-        { workspace_id, start_time: start_time_iso, end_time: end_time_iso },
+        { workspace_id, start_time, end_time },
         { new: true }
       );
 
@@ -49,12 +39,7 @@ export class MongoWorkspaceTimerRepository implements WorkspaceTimerRepository {
         return null;
       }
 
-      return ({
-        id: workspace_timer_id,
-        workspace_id: workspaceTimer.workspace_id,
-        start_time: dateUtil.toBR(new Date(start_time_iso ?? workspaceTimer.start_time)),
-        end_time: end_time_iso ? dateUtil.toBR(new Date(end_time_iso)) : undefined,
-      });
+      return workspaceTimer as WorkspaceTimer;
     } catch (error) {
       console.error('Error updating timer in MongoDB:', error);
       return null;

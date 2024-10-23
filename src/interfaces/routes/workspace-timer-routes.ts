@@ -90,7 +90,7 @@ router.post('/', timerController.create.bind(timerController));
  *      500:
  *        description: Server error
  */
-router.put('/:id', timerController.update.bind(timerController));
+router.put('/:workspace_timer_id', timerController.update.bind(timerController));
 
 /**
  * @openapi 

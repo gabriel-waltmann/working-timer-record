@@ -5,7 +5,7 @@ import { WorkspaceTimerRepository } from "../../../domain/repositories/workspace
 export class CreateWorkspaceTimerUseCase {
   constructor(readonly workspaceTimerRepository: WorkspaceTimerRepository) {}
 
-  async execute(workspaceTimerId: number, start?: Date, end?: Date): Promise<WorkspaceTimer | null> {
-    return await this.workspaceTimerRepository.create(workspaceTimerId, start, end);
+  async execute(workspaceTimerId: number, start_time?: string, end_time?: string): Promise<WorkspaceTimer | null> {
+    return await this.workspaceTimerRepository.create(workspaceTimerId, start_time, end_time);
   }
 }
