@@ -21,9 +21,6 @@ case "$WORKSPACE_NAME" in
             stop)
                 "$SCRIPT_DIR/stop.sh"
                 ;;
-            status)
-                "$SCRIPT_DIR/status.sh"
-                ;;
             *)
                 echo "Usage: workspaces-cli reune {start|stop}"
                 exit 1
