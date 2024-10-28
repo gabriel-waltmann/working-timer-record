@@ -1,32 +1,30 @@
 #!/bin/bash
 
-# Read the workspaceTimerId from the file
-workspaceTimerId=$(cat ~/.workspace_timer_id)
+source .env
 
-# Check if workspaceTimerId is not empty
-if [ -z "$workspaceTimerId" ]; then
+WORKSPACE_TIMER_ID=$(cat ~/.workspace_timer_id)
+
+if [ -z "$WORKSPACE_TIMER_ID" ]; then
     echo "workspaceTimerId not found. Aborting project stop."
     exit 1
 fi
 
-echo "workspaceTimerId: $workspaceTimerId"
+URL="$SCRIPT_BASE_URL/workspace-timer/$WORKSPACE_TIMER_ID"
+WORKSPACE_ID="$SCRIPT_WORKSPACE_ID"
 
-# Make a POST request and capture the HTTP response status
-response=$(curl -s -o /dev/null -w "%{http_code}" -X POST https://working-timer-record.onrender.com/workspace-timer/end -d "{\"workspaceTimerId\": \"$workspaceTimerId\"}" -H "Content-Type: application/json")
+BODY='{ "workspace_id": "'$WORKSPACE_ID'", "time_zone": "America/Sao_Paulo", "end_time": "auto" }'
+
+echo "URL: $URL"
+echo "BODY: $BODY"
+echo "WORKSPACE_ID: $WORKSPACE_ID"
+echo "WORKSPACE_TIMER_ID: $WORKSPACE_TIMER_ID"
+
+response=$(curl -s -o /dev/null -w "%{http_code}" -X PUT $URL -d "$BODY" -H "Content-Type: application/json")
 echo $response
 
-# Check if the response status is 204
-if [ "$response" -ne 204 ]; then
+if [ "$response" -ne 200 ]; then
     echo "POST request failed with status $response. Aborting project stop."
     exit 1
 fi
 
-echo "POST request successful. Stopping project..."
-
-# Stop Redis and MariaDB Docker containers
-docker stop reune-redis reune-db
-
-# Kill all instances of yarn processes (adjust command if needed)
-pkill -f "yarn dev:tsc"
-pkill -f "yarn dev:serve"
-pkill -f "yarn dev"
+echo "POST request successful!!"

@@ -1,20 +1,25 @@
 #!/bin/bash
 
-WORKSPACE_ID=1727368941748
+source .env
 
-# Make a POST request and capture the response (assuming the response contains JSON with a field "workspaceTimerId")
-response=$(curl -s -X POST https://working-timer-record.onrender.com/workspace-timer/start -d '{"workspaceId": "'$WORKSPACE_ID'"}' -H "Content-Type: application/json")
+URL="$SCRIPT_BASE_URL/workspace-timer"
+WORKSPACE_ID="$SCRIPT_WORKSPACE_ID"
 
-# Extract the workspaceTimerId from the response using jq (make sure jq is installed)
+BODY='{ "workspace_id": "'$WORKSPACE_ID'", "time_zone": "America/Sao_Paulo", "start_time": "auto" }'
+
+echo "URL: $URL"
+echo "BODY: $BODY"
+echo "WORKSPACE_ID: $WORKSPACE_ID"
+
+response=$(curl -s -X POST $URL -d "$BODY" -H "Content-Type: application/json")
+
 workspaceTimerId=$(echo $response | jq -r '.timer.id')
 
-# Check if workspaceTimerId is not empty
-if [ -z "$workspaceTimerId" ]; then
+if [ -z "$workspaceTimerId" ] || [ -n "$workspaceTimerId" ] && [ "$workspaceTimerId" = "null" ]; then
     echo "Failed to retrieve workspaceTimerId."
     exit 1
 fi
 
-# Store the workspaceTimerId in a file for later use
 echo $workspaceTimerId > ~/.workspace_timer_id
 
-echo "POST request successful. Received workspaceTimerId: $workspaceTimerId. Starting project..."
+echo "POST request successful (workspaceTimerId: $workspaceTimerId)"

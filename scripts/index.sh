@@ -1,8 +1,11 @@
 #!/bin/bash
 
+# Source the .env file
+source .env
+
 SCRIPT_DIR=$(dirname "$0")
 
-WORKSPACE_NAME=reune
+WORKSPACE_NAME=$SCRIPT_WORKSPACE_NAME
 
 WORKSPACE_NAME=$1
 ACTION=$2
