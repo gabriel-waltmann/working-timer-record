@@ -42,13 +42,18 @@ export class WorkspaceTimerController {
       return res.status(400).json({ error: 'Start date is required' });
     }
 
-    const start_time_iso = dateUtils.BRtoISO(start_time, time_zone);
+    let start_time_iso = null;
+    if (start_time && start_time === "auto") start_time_iso = dateUtils.getCurrentUTC();
+    else if (start_time) start_time_iso = dateUtils.BRtoISO(start_time, time_zone);
 
     if (!start_time_iso) {
       return res.status(400).json({ error: 'Start date is invalid' });
     }
 
-    const end_time_iso = end_time ? dateUtils.BRtoISO(end_time, time_zone) ?? undefined : undefined;
+    let end_time_iso = undefined;
+    if (end_time && end_time === "auto") end_time_iso = dateUtils.getCurrentUTC();
+    else if (end_time) end_time_iso = dateUtils.BRtoISO(end_time, time_zone);
+
     if (end_time && !end_time_iso) {
       return res.status(400).json({ error: 'Invalid end date' });
     }
@@ -92,17 +97,13 @@ export class WorkspaceTimerController {
       return res.status(400).json({ error: 'Invalid time zone' });
     }
 
-    if (!start_time) {
-      return res.status(400).json({ error: 'Start date is required' });
-    }
+    let start_time_iso = undefined;
+    if (start_time === "auto") start_time_iso = dateUtils.getCurrentUTC();
+    else if (start_time) start_time_iso = dateUtils.BRtoISO(start_time, time_zone);
 
-    const start_time_iso = dateUtils.BRtoISO(start_time, time_zone);
-
-    if (!start_time_iso) {
-      return res.status(400).json({ error: 'Start date is invalid' });
-    }
-
-    const end_time_iso = end_time ? dateUtils.BRtoISO(end_time, time_zone) ?? undefined : undefined;
+    let end_time_iso = undefined;
+    if (end_time && end_time === "auto") end_time_iso = dateUtils.getCurrentUTC();
+    else if (end_time) end_time_iso = dateUtils.BRtoISO(end_time, time_zone);
     if (end_time && !end_time_iso) {
       return res.status(400).json({ error: 'Invalid end date' });
     }
