@@ -18,24 +18,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 4: Install pnpm
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-
       # Step 2: Set up Node.js environment
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}  # Use the Node.js version defined in the matrix
-          cache: 'pnpm'  # Change to 'npm' if you're using npm
+          cache: 'pnpm'  # Use pnpm's cache mechanism
 
-      # Step 3: Install dependencies
-      - name: Install dependencies
+      # Step 3: Install pnpm
+      - name: Install pnpm
         run: |
-          pnpm install  # Change to 'npm install' if using npm
-          
+          corepack enable  # Enable Corepack (comes pre-installed with Node.js >=16.9.0)
+          pnpm install --frozen-lockfile  # Install dependencies using pnpm
+
       # Step 5: Optional: Build the application
       - name: Build application
         run: |
           pnpm build  # Replace with your build script, if applicable
-
