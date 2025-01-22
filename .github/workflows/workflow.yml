@@ -22,16 +22,20 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}  # Use the Node.js version defined in the matrix
-          cache: 'pnpm'  # Use pnpm's cache mechanism
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
       # Step 3: Install pnpm
       - name: Install pnpm
         run: |
-          corepack enable  # Enable Corepack (comes pre-installed with Node.js >=16.9.0)
-          pnpm install --frozen-lockfile  # Install dependencies using pnpm
+          npm install -g pnpm  # Globally install pnpm
 
-      # Step 5: Optional: Build the application
+      # Step 4: Install dependencies with pnpm
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          
+      # Step 6: Optional: Build the application
       - name: Build application
         run: |
           pnpm build  # Replace with your build script, if applicable
