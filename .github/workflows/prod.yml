@@ -21,6 +21,8 @@ jobs:
 
       - name: rsync deployments
         uses: burnett01/rsync-deployments@5.1
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         with:
           switches: -avzr --delete
           path: ./*
