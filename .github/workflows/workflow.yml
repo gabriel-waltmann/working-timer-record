@@ -23,15 +23,15 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}  # Use the Node.js version defined in the matrix
-          cache: 'yarn'  # Change to 'npm' if you're using npm
+          cache: 'pnpm'  # Change to 'npm' if you're using npm
 
       # Step 3: Install dependencies
       - name: Install dependencies
         run: |
-          yarn install  # Change to 'npm install' if using npm
+          pnpm install  # Change to 'npm install' if using npm
           
       # Step 5: Optional: Build the application
       - name: Build application
         run: |
-          yarn build  # Replace with your build script, if applicable
+          pnpm build  # Replace with your build script, if applicable
 
