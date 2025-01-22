@@ -23,10 +23,16 @@ jobs:
 
       - run: npm run build
 
+      - name: Start SSH agent
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Test SSH connection
+        run: ssh -o StrictHostKeyChecking=no ubuntu@ec2-3-87-160-17.compute-1.amazonaws.com echo "SSH connection successful"
+
       - name: rsync deployments
         uses: burnett01/rsync-deployments@5.1
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         with:
           switches: -avzr --delete
           path: ./*
