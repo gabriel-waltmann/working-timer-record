@@ -26,6 +26,7 @@ A RESTful API for managing working time records. The API allows users to create,
 MONGODB_URL=mongodb://your-mongodb-host/your-database
 REDIS_HOST=your-redis-host
 REDIS_PORT=your-redis-port
+6. Optional: [Stup mongo and redis locally](./docs/docker-setup.md)
 6. Execute in terminal: `pnpm dev`
 7. Project running at [https://localhost:3000]
 8. Swagger running at [https://localhost:3000/api-docs]
