@@ -12,7 +12,6 @@
     "allowSyntheticDefaultImports": true,
     "strictPropertyInitialization": false,
   },
-  "ts-node": { "esm": true },
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Recommended",
   "include": ["src/**/*", "src/index.ts", "config", "migrations", "types/**/*.d.ts", "src/swagger/index.ts"],

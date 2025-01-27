@@ -3,6 +3,11 @@ import swaggerJsdoc from 'swagger-jsdoc';
 import { version } from '../../package.json';
 import servers from "./servers.json";
 import swaggerUI from 'swagger-ui-express';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const port = process.env.PORT || 3000;
 
 const options: swaggerJsdoc.Options = {
   definition: {
@@ -41,5 +46,5 @@ export default (app: Express) => {
     return res.send(swaggerSpec);
   });
 
-  console.info('Swagger docs available at http://localhost:3000/api-docs');
+  console.info(`Swagger docs available at http://localhost:${port}/api-docs`);
 };
