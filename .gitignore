@@ -5,3 +5,4 @@ dist
 .env.local
 .env.prod
 *.xlsx
+*lock.yaml
