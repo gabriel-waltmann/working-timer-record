@@ -19,8 +19,7 @@ export class WorkspaceTimerController {
   ) {}
   
   async create(req: Request, res: Response): Promise<Response> {
-    const { workspace_id, start_time, end_time, time_zone } = req.body;
-    const dateUtils = new DateUtils();
+    const { workspace_id, start_time, end_time } = req.body;
 
     if (!workspace_id) {
       return res.status(400).json({ error: 'Workspace ID is required' });
@@ -30,39 +29,32 @@ export class WorkspaceTimerController {
       return res.status(400).json({ error: 'Invalid workspace ID' });
     }
 
-    if (!time_zone) {
-      return res.status(400).json({ error: 'Time zone is required' });
-    }
-
-    if (time_zone !== "America/Sao_Paulo" && time_zone !== "UTC") {
-      return res.status(400).json({ error: 'Invalid time zone' });
-    }
-
     if (!start_time) {
       return res.status(400).json({ error: 'Start date is required' });
     }
 
-    let start_time_iso = null;
-    if (start_time && start_time === "auto") start_time_iso = dateUtils.getCurrentUTC();
-    else if (start_time) start_time_iso = dateUtils.BRtoISO(start_time, time_zone);
-
-    if (!start_time_iso) {
+    const startTime = new Date(start_time);
+    if (isNaN(startTime?.getTime())) {
       return res.status(400).json({ error: 'Start date is invalid' });
     }
 
-    let end_time_iso = undefined;
-    if (end_time && end_time === "auto") end_time_iso = dateUtils.getCurrentUTC();
-    else if (end_time) end_time_iso = dateUtils.BRtoISO(end_time, time_zone);
+    if (end_time) {
+      const endTime = new Date(end_time);
 
-    if (end_time && !end_time_iso) {
-      return res.status(400).json({ error: 'Invalid end date' });
+      if (isNaN(endTime?.getTime())) {
+        return res.status(400).json({ error: 'Invalid end date' });
+      }
+
+      if (startTime > endTime) {
+        return res.status(400).json({ error: 'Start date must be before end date' });
+      }
     }
 
-    if (start_time_iso && end_time_iso && new Date(start_time_iso) > new Date(end_time_iso)) {
-      return res.status(400).json({ error: 'Start date must be before end date' });
-    }
-
-    const timer = await this.createWorkspaceTimer.execute(workspace_id, start_time_iso, end_time_iso);
+    const timer = await this.createWorkspaceTimer.execute(
+      workspace_id, 
+      start_time, 
+      end_time
+    );
 
     if (!timer) {
       return res.status(500).json({ error: 'Failed to create timer' });
@@ -72,7 +64,7 @@ export class WorkspaceTimerController {
   }
 
   async update(req: Request, res: Response): Promise<Response> {
-    const { workspace_id, start_time, end_time, time_zone } = req.body;
+    const { workspace_id, start_time, end_time } = req.body;
     const { workspace_timer_id } = req.params;
     const dateUtils = new DateUtils();
 
@@ -89,26 +81,33 @@ export class WorkspaceTimerController {
       return res.status(400).json({ error: 'Invalid workspace ID' });
     }
 
-    if (!time_zone) {
-      return res.status(400).json({ error: 'Time zone is required' });
+    if (!start_time) {
+      return res.status(400).json({ error: 'Start date is required' });
     }
 
-    if (time_zone !== "America/Sao_Paulo" && time_zone !== "UTC") {
-      return res.status(400).json({ error: 'Invalid time zone' });
+    const startTime = new Date(start_time);
+    if (isNaN(startTime?.getTime())) {
+      return res.status(400).json({ error: 'Start date is invalid' });
     }
 
-    let start_time_iso = undefined;
-    if (start_time === "auto") start_time_iso = dateUtils.getCurrentUTC();
-    else if (start_time) start_time_iso = dateUtils.BRtoISO(start_time, time_zone);
+    if (end_time) {
+      const endTime = new Date(end_time);
 
-    let end_time_iso = undefined;
-    if (end_time && end_time === "auto") end_time_iso = dateUtils.getCurrentUTC();
-    else if (end_time) end_time_iso = dateUtils.BRtoISO(end_time, time_zone);
-    if (end_time && !end_time_iso) {
-      return res.status(400).json({ error: 'Invalid end date' });
+      if (isNaN(endTime?.getTime())) {
+        return res.status(400).json({ error: 'Invalid end date' });
+      }
+
+      if (startTime > endTime) {
+        return res.status(400).json({ error: 'Start date must be before end date' });
+      }
     }
 
-    const timer = await this.updateWorkspaceTimer.execute(workspace_timer_id_number, workspace_id, start_time_iso, end_time_iso);
+    const timer = await this.updateWorkspaceTimer.execute(
+      workspace_timer_id_number, 
+      workspace_id, 
+      start_time, 
+      end_time
+    );
 
     if (!timer) {
       return res.status(404).json({ error: 'Timer not found' });
@@ -179,11 +178,3 @@ export class WorkspaceTimerController {
     return await workbook.xlsx.write(res);
   }
 }
-
-/* 
-curl -sS --location \               
-  --request POST 'http://localhost:3000/workspace-timer/export' \
-  --header 'Content-Type: application/json' \
-  --data-raw '{"startDate": "2024-10-01", "endDate": "2024-10-31", "workspaceId": 1727368941748}' \
-  -o exported-file.xlsx
-*/
