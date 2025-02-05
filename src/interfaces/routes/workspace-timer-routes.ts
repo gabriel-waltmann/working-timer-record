@@ -29,6 +29,8 @@ const timerController = new WorkspaceTimerController(
 
 const router = Router();
 
+// TODO: fix swagger
+
 /**
  * @openapi 
  * /workspace-timer:

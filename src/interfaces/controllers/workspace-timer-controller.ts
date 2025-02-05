@@ -129,11 +129,13 @@ export class WorkspaceTimerController {
   }
 
   async retrieves(req: Request, res: Response): Promise<Response> {
+    const workspaceId = req.query.workspace_id ? +req.query.workspace_id : 0;
+
     const status = typeof req.query.status === 'string' && req.query.status   
       ? parseInt(`${req.query.status}`) as WorkspaceTimerStatus 
       : undefined;
 
-    const timers = await this.retrievesTimerUseCase.execute(status);
+    const timers = await this.retrievesTimerUseCase.execute(workspaceId, status);
     
     return res.status(200).json({ timers });
   }

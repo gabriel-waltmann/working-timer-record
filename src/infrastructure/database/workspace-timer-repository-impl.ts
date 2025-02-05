@@ -56,28 +56,22 @@ export class MongoWorkspaceTimerRepository implements WorkspaceTimerRepository {
     return timerRecord as WorkspaceTimer;
   }
 
-  async retrieves(status?: WorkspaceTimerStatus): Promise<WorkspaceTimer[]> {
-    let workspaceTimers = [];
+  async retrieves(workspaceTimerId: number, status?: WorkspaceTimerStatus): Promise<WorkspaceTimer[]> {
+    const queryConditions: any = { workspace_id: workspaceTimerId };
 
-    const getStarted = async () => await WorkspaceTimerModel.find({ end_time: { $exists: false } });
-
-    const getEnded = async () => await WorkspaceTimerModel.find({ end_time: { $exists: true }});
-
-    switch (status) {
-      case WorkspaceTimerStatus.RUNNING:
-        workspaceTimers = await getStarted();
-        break;
-    
-      case WorkspaceTimerStatus.ENDED:
-        workspaceTimers = await getEnded();
-        break;
-      default:
-        workspaceTimers = await getStarted();
-        workspaceTimers = workspaceTimers.concat(await getEnded());
-        break;
+    // filter by status
+    if (status === WorkspaceTimerStatus.RUNNING) {
+      queryConditions.end_time = { $exists: false };
+    }
+    else if (status === WorkspaceTimerStatus.ENDED) {
+      queryConditions.end_time = { $exists: true };
     }
 
-    return workspaceTimers as WorkspaceTimer[];
+    const query = WorkspaceTimerModel.find(queryConditions);
+
+    query.getFilter();
+
+    return await query.exec() as WorkspaceTimer[];
   }
 
   async delete(workspaceTimerId: number): Promise<boolean> {

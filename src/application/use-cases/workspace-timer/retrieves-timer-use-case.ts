@@ -4,7 +4,7 @@ import { WorkspaceTimerRepository } from "../../../domain/repositories/workspace
 export class RetrievesTimerUseCase {
   constructor(readonly workspaceTimerRepository: WorkspaceTimerRepository) {}
 
-  async execute(status?: WorkspaceTimerStatus) {
-    return await this.workspaceTimerRepository.retrieves(status);
+  async execute(workspaceId: number, status?: WorkspaceTimerStatus) {
+    return await this.workspaceTimerRepository.retrieves(workspaceId, status);
   }
 }
