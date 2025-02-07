@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface WorkspaceDocument extends Document {
   id: number;
@@ -7,7 +7,7 @@ export interface WorkspaceDocument extends Document {
 }
 
 /**
- * @openapi 
+ * @openapi
  * components:
  *  schemas:
  *    Workspace:
@@ -23,22 +23,22 @@ export interface WorkspaceDocument extends Document {
  *        - id
  *        - name
  *        - price_by_hour
- * 
+ *
  *    WorkspaceCreate:
  *      type: object
  *      properties:
- *        name: 
+ *        name:
  *          type: string
  *        priceByHour:
  *          type: number
  *      required:
  *        - name
  *        - priceByHour
- * 
+ *
  *    WorkspaceUpdate:
  *      type: object
  *      properties:
- *        name: 
+ *        name:
  *          type: string
  *        price_by_hour:
  *          type: number
@@ -49,7 +49,7 @@ export interface WorkspaceDocument extends Document {
 const workspaceSchema = new Schema({
   id: { type: Number, required: true },
   name: { type: String, required: true },
-  price_by_hour: { type: Number, required: true },
+  price_by_hour: { type: Number, required: true }
 });
 
-export default mongoose.model<WorkspaceDocument>('Workspace', workspaceSchema);
+export default mongoose.model<WorkspaceDocument>("Workspace", workspaceSchema);

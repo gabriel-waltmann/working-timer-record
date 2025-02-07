@@ -1,8 +1,8 @@
-import express from 'express';
-import connectMongoDB from './infrastructure/database/mongoose';
-import routes from './interfaces/routes/index';
-import dotenv from 'dotenv';
-import swagger from './swagger';
+import express from "express";
+import connectMongoDB from "./infrastructure/database/mongoose";
+import routes from "./interfaces/routes/index";
+import dotenv from "dotenv";
+import swagger from "./swagger";
 
 const app = express();
 

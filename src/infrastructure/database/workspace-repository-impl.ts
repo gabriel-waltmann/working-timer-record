@@ -1,22 +1,22 @@
-import WorkspaceModel from '../database/models/workspace';
-import { WorkspaceRepository } from '../../domain/repositories/workspace-repository';
-import { Workspace } from '../../domain/entities/workspace';
+import WorkspaceModel from "../database/models/workspace";
+import { WorkspaceRepository } from "../../domain/repositories/workspace-repository";
+import { Workspace } from "../../domain/entities/workspace";
 
 export class MongoWorkspaceRepository implements WorkspaceRepository {
   async create(workspaceName: string, priceByHour: number): Promise<Workspace> {
     const workspace = new WorkspaceModel({
-      id: Date.now(), 
+      id: Date.now(),
       name: workspaceName,
       price_by_hour: priceByHour
     });
 
     try {
-      await workspace.save();  
+      await workspace.save();
 
       return workspace;
     } catch (error) {
-      console.error('Error creating workspace:', error);
-      throw new Error('Could not create workspace'); 
+      console.error("Error creating workspace:", error);
+      throw new Error("Could not create workspace");
     }
   }
 
@@ -34,7 +34,11 @@ export class MongoWorkspaceRepository implements WorkspaceRepository {
     return workspaces;
   }
 
-  async update(workspaceId: number, workspaceName: string, priceByHour: number): Promise<Workspace | null> {
+  async update(
+    workspaceId: number,
+    workspaceName: string,
+    priceByHour: number
+  ): Promise<Workspace | null> {
     const filter = { id: workspaceId };
 
     const update = { name: workspaceName, price_by_hour: priceByHour };

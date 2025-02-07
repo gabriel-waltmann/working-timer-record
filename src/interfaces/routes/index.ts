@@ -1,10 +1,10 @@
-import { Router } from 'express';
-import workspaceRoutes from './workspace-routes';
-import workspaceTimerController from './workspace-timer-routes';
+import { Router } from "express";
+import workspaceRoutes from "./workspace-routes";
+import workspaceTimerController from "./workspace-timer-routes";
 const router = Router();
 
 /**
- * @openapi 
+ * @openapi
  * /:
  *  get:
  *    tags: [Core]
@@ -14,12 +14,11 @@ const router = Router();
  *      200:
  *        description: API is running
  */
-router.get('/', (req, res) => {
+router.get("/", (req, res) => {
   res.status(200).json({ message: "API is running!" });
 });
 
-router.use('/workspaces', workspaceRoutes);
-router.use('/workspace-timer', workspaceTimerController);
+router.use("/workspaces", workspaceRoutes);
+router.use("/workspace-timer", workspaceTimerController);
 
 export default router;
-  

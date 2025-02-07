@@ -10,10 +10,17 @@
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strictPropertyInitialization": false,
+    "strictPropertyInitialization": false
   },
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Recommended",
-  "include": ["src/**/*", "src/index.ts", "config", "migrations", "types/**/*.d.ts", "src/swagger/index.ts"],
+  "include": [
+    "src/**/*",
+    "src/index.ts",
+    "config",
+    "migrations",
+    "types/**/*.d.ts",
+    "src/swagger/index.ts"
+  ],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

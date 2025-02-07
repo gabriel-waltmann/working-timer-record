@@ -2,7 +2,7 @@ name: Build with node, push to docker hub and deploy at VPS
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build-push-and-deploy:
@@ -34,4 +34,3 @@ jobs:
             docker-compose pull working-timer-record-backend
             docker compose down working-timer-record-backend
             docker compose up -d --no-deps working-timer-record-backend
-

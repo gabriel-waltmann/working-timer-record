@@ -6,6 +6,6 @@ export class RetrievesOneWorkspaceUseCase {
   async execute(workspaceId: number) {
     const workspace = await this.workspaceRepository.retrievesOne(workspaceId);
 
-    return workspace; 
+    return workspace;
   }
 }

@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface WorkspaceTimerDocument extends Document {
   id: number;
@@ -26,7 +26,7 @@ export interface WorkspaceTimerDocument extends Document {
  *        - id
  *        - workspace_id
  *        - start_time
- * 
+ *
  *    WorkspaceTimerStart:
  *      type: object
  *      properties:
@@ -34,7 +34,7 @@ export interface WorkspaceTimerDocument extends Document {
  *          type: number
  *      required:
  *        - workspaceId
- *      
+ *
  *    WorkspaceTimerEnd:
  *      type: object
  *      properties:
@@ -42,7 +42,7 @@ export interface WorkspaceTimerDocument extends Document {
  *          type: number
  *      required:
  *        - workspaceId
- * 
+ *
  *    WorkspaceTimerExport:
  *      type: object
  *      properties:
@@ -60,12 +60,15 @@ export interface WorkspaceTimerDocument extends Document {
  *        startDate: 2024-09-01
  *        endDate: 2024-09-31
  *        workspaceId: 1727368941748
-*/
+ */
 const workspaceTimerSchema = new Schema({
   id: { type: Number, required: true },
   workspace_id: { type: Number, required: true },
   start_time: { type: Date, required: true },
-  end_time: { type: Date, required: false },
+  end_time: { type: Date, required: false }
 });
 
-export default mongoose.model<WorkspaceTimerDocument>('WorkspaceTimer', workspaceTimerSchema);
+export default mongoose.model<WorkspaceTimerDocument>(
+  "WorkspaceTimer",
+  workspaceTimerSchema
+);
