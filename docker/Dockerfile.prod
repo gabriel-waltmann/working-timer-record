@@ -4,6 +4,8 @@ WORKDIR /app
 
 COPY package.json ./
 
+RUN apk add --no-cache qpdf
+
 RUN npm install
 
 COPY . .

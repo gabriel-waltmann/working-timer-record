@@ -1,6 +1,8 @@
 import { Router } from "express";
 import workspaceRoutes from "./workspace-routes";
-import workspaceTimerController from "./workspace-timer-routes";
+import workspaceTimerRoutes from "./workspace-timer-routes";
+import bankToNotionRoutes from "./bank-to-notion-routes";
+
 const router = Router();
 
 /**
@@ -19,6 +21,9 @@ router.get("/", (req, res) => {
 });
 
 router.use("/workspaces", workspaceRoutes);
-router.use("/workspace-timer", workspaceTimerController);
+
+router.use("/workspace-timer", workspaceTimerRoutes);
+
+router.use("/bank-to-notion", bankToNotionRoutes);
 
 export default router;

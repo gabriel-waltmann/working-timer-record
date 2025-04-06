@@ -2,9 +2,9 @@
   "compilerOptions": {
     "target": "ES2016",
     "outDir": "dist",
-    "module": "commonjs",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "resolveJsonModule": true,
-    "moduleResolution": "node",
     "strict": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,

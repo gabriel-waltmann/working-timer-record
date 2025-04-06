@@ -1,7 +1,8 @@
 import WorkspaceTimerModel from "../database/models/workspace-timer";
 import WorkspaceModel from "../database/models/workspace";
 import { WorkspaceTimerRepository } from "../../domain/repositories/workspace-timer-repository";
-import workspaceTimerQueue from "../queue/workspace-timer-queue";
+// import workspaceTimerQueue from "../queue/workspace-timer-queue";
+
 import {
   WorkspaceTimer,
   WorkspaceTimerStatus
@@ -100,14 +101,15 @@ export class MongoWorkspaceTimerRepository implements WorkspaceTimerRepository {
       id: workspaceTimerId
     });
 
-    // ! Get the timer from Redis
-    const workspaceTimerJob =
-      await workspaceTimerQueue.getJob(workspaceTimerId);
+    // TODO: Implement Redis queue
+    // // ! Get the timer from Redis
+    // const workspaceTimerJob =
+    //   await workspaceTimerQueue.getJob(workspaceTimerId);
 
-    // ! Remove the timer from Redis
-    if (workspaceTimerJob && !workspaceTimerJob.processedOn) {
-      await workspaceTimerJob.remove();
-    }
+    // // ! Remove the timer from Redis
+    // if (workspaceTimerJob && !workspaceTimerJob.processedOn) {
+    //   await workspaceTimerJob.remove();
+    // }
 
     return !!deleted;
   }

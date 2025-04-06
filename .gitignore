@@ -6,3 +6,4 @@ dist
 .env.prod
 *.xlsx
 *lock.yaml
+uploads

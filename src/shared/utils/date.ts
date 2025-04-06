@@ -26,3 +26,20 @@ export default class DateUtils implements IDateUtils {
     return moment().utc().toISOString();
   }
 }
+
+export const months = {
+  jan: "01",
+  fev: "02",
+  mar: "03",
+  abr: "04",
+  mai: "05",
+  jun: "06",
+  jul: "07",
+  ago: "08",
+  set: "09",
+  out: "10",
+  nov: "11",
+  dez: "12",
+};
+
+export const getMonthByBrStr = (monthBrStr: string) => months[monthBrStr.toLowerCase() as keyof typeof months];

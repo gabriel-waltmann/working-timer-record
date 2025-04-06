@@ -1,7 +1,7 @@
 import config from "./config";
 import Queue from "bull";
 
-const queue = new Queue("workspace-timers", { redis: config });
+const queue = new Queue("workspace-timers", config);
 
 queue.on("error", (err) => {
   console.error(err);
