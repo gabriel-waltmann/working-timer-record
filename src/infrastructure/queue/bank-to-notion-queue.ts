@@ -6,6 +6,7 @@ import PdfService from "../services/pdf/pdf-service";
 import { PdfNubankService } from "../services/pdf/pdf-nubank-service";
 import dotenv from "dotenv";
 import BankToNotionModel from "../database/models/bank-to-notion";
+import fs from "fs";
 
 dotenv.config();
 
@@ -43,10 +44,14 @@ async function handleProcessBankToNotion(job: Queue.Job) {
       const decryptedPdfPath = await pdfInterService.decrypt(pdf, password);
 
       transactions = await pdfInterService.extract(decryptedPdfPath);
+
+      await fs.promises.unlink(decryptedPdfPath);
     } else if (bank === "nubank") {
       const decryptedPdfPath = await pdfNubankService.decrypt(pdf);
 
       transactions = await pdfNubankService.extract(decryptedPdfPath);
+
+      await fs.promises.unlink(decryptedPdfPath);
     }
 
     const databaseId = process.env.NOTION_DATABASE_ID;
