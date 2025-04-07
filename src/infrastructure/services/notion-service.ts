@@ -23,6 +23,8 @@ export default class NotionService {
     
     if (!auth) throw new Error("Notion API key not found.");
 
+    console.log("Notion API key: " + auth);
+
     const notion = new Client({ auth });
 
     this.notion = notion;

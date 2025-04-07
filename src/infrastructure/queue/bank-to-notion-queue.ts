@@ -54,15 +54,21 @@ async function handleProcessBankToNotion(job: Queue.Job) {
       await fs.promises.unlink(decryptedPdfPath);
     }
 
+    console.log({ transactions });
+
     const databaseId = process.env.NOTION_DATABASE_ID;
 
     if (!databaseId) throw new Error("Database id not found.");
+
+    console.log("Importing transactions to database: " + databaseId);
 
     const promises = transactions.map(transaction => (
       notionService.addRowToDatabase(databaseId, transaction)
     ));
 
-    await Promise.all(promises);
+    const results = await Promise.all(promises);
+
+    console.log("Transactions imported to database: " + results);
 
     await BankToNotionModel.updateOne({ id }, { executed_at: new Date().toISOString() });
   } catch (error) {

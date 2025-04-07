@@ -34,8 +34,6 @@ export class PdfNubankService {
         const month = DateUtil.getMonthByBrStr(monthStr);
         const year = text.slice(-4);
 
-        console.log({ day, month, year });
-
         const date = new Date(+year, +month - 1, +day);
 
         if (isNaN(date.getTime())) continue;
