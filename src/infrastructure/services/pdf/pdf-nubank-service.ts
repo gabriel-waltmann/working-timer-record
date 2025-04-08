@@ -93,24 +93,34 @@ export class PdfNubankService {
   
     const spendPages = await this.extractExpensePages(pages);
 
+    console.log({ pages, spendPages });
+
     const data: INotionDatabaseRow[] = [];
 
     for (const { content } of spendPages) {
       for (const contentIndex in content) {
         const createdAt = this.extractCreatedAt(content, +contentIndex);
 
+        console.log({ createdAt });
+
         if (!createdAt) continue;
 
         const expiration = this.extractExpiration(pages);
+
+        console.log({ expiration });
 
         if (!expiration) continue;
 
         const value = this.extractValue(content, +contentIndex);
 
+        console.log({ value });
+
         if (!value) continue;
 
         const name = this.extractName(content, +contentIndex);
 
+        console.log({ name });
+        
         if (!name) continue;
 
         data.push({ 

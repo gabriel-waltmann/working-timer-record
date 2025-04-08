@@ -34,20 +34,28 @@ async function handleProcessBankToNotion(job: Queue.Job) {
 
     const { id, pdf, bank } = job.data;
 
+    console.log({ id, pdf, bank });
+
     let transactions: INotionDatabaseRow[] = [];
 
     if (bank === "inter") {
       const password = process.env.INTER_PASSWORD;
 
+      console.log({ INTER_PASSWORD: password });
+
       if (!password) throw new Error("INTER_PASSWORD not found.");
 
       const decryptedPdfPath = await pdfInterService.decrypt(pdf, password);
+
+      console.log({ decryptedPdfPath });
 
       transactions = await pdfInterService.extract(decryptedPdfPath);
 
       await fs.promises.unlink(decryptedPdfPath);
     } else if (bank === "nubank") {
       const decryptedPdfPath = await pdfNubankService.decrypt(pdf);
+
+      console.log({ decryptedPdfPath });
 
       transactions = await pdfNubankService.extract(decryptedPdfPath);
 
