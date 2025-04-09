@@ -2,6 +2,21 @@ import { PDFExtractPage, PDFExtractText } from "pdf.js-extract";
 import PdfService from "./pdf-service";
 import { INotionDatabaseRow } from "../notion-service";
 
+const months = {
+  jan: "01",
+  fev: "02",
+  mar: "03",
+  abr: "04",
+  mai: "05",
+  jun: "06",
+  jul: "07",
+  ago: "08",
+  set: "09",
+  out: "10",
+  nov: "11",
+  dez: "12",
+};
+
 export class PdfInterService {
   constructor(
     readonly pdfService: PdfService,
@@ -16,7 +31,7 @@ export class PdfInterService {
   }
 
   async extractExpensePages(pages: PDFExtractPage[]): Promise<PDFExtractPage[]> {
-    const pageTitle = "Despesas da fatura";
+    const pageTitle = "Despesas";
     
     return pages.filter(({ content }) => content.find(({ str }) => str === pageTitle));
   }
@@ -44,35 +59,29 @@ export class PdfInterService {
   }
 
   extractCreatedAt(content: PDFExtractText[], contentDateIndex: number): string | null {
-    const { str: createdAtBr } = content[contentDateIndex];
+    const { str: createdAtDayStr } = content[contentDateIndex];
 
-    // 01 de jan. 2000
-    const dateRegex = /(\d{2})\s+de\s+([a-z]{3})\.\s+(\d{4})/i;
+    const createdAtDayNum = Number(createdAtDayStr);
 
-    if (!createdAtBr.match(dateRegex)) return null;
+    if (isNaN(createdAtDayNum) || !createdAtDayNum) return null;
+        
+    const { str: createdAtMonthStr } = content[+contentDateIndex + 4];
 
-    const day = createdAtBr.slice(0, 2);
-    const monthStr = createdAtBr.slice(6, 9);
-    const year = createdAtBr.slice(-4);
+    const month = months[createdAtMonthStr.toLowerCase() as keyof typeof months];
+        
+    if (!month) return null;
 
-    const months = {
-      jan: "01",
-      fev: "02",
-      mar: "03",
-      abr: "04",
-      mai: "05",
-      jun: "06",
-      jul: "07",
-      ago: "08",
-      set: "09",
-      out: "10",
-      nov: "11",
-      dez: "12",
-    };
+    // . YYYY
+    let { str: createdAtYearStr } = content[+contentDateIndex + 5];
 
-    const month = months[monthStr.toLowerCase() as keyof typeof months];
+    if (!createdAtYearStr.includes(".")) return null;
 
-    const date = new Date(+year, +month - 1, +day);
+    createdAtYearStr = createdAtYearStr.replace(".", "");
+
+    if (isNaN(+createdAtYearStr)) return null;
+
+
+    const date = new Date(+createdAtYearStr, +month - 1, createdAtDayNum);
 
     if (isNaN(date.getTime())) return null;
 
@@ -80,23 +89,30 @@ export class PdfInterService {
   }
 
   extractValue(content: PDFExtractText[], contentDateIndex: number): number {
-    const { str: value1 } = content[+contentDateIndex + 6];
+    const value = -1;
+    let currentIndex = contentDateIndex;
 
-    if (value1.includes("R$")) {
-      return +value1.replace("R$", "").replace(".", "").replace(",", ".");
-    }
+    while (value === -1) {
+      currentIndex++;
 
-    const { str: value2 } = content[+contentDateIndex + 8];
+      const { str: currencyStr } = content[currentIndex];
 
-    if (value2.includes("R$")) {
-      return +value2.replace("R$", "").replace(".", "").replace(",", ".");
+      if (currencyStr === undefined) return 0;
+
+      if (!currencyStr?.includes("R$")) continue;
+        
+      const { str: valueStr } = content[currentIndex + 2];
+
+      if (valueStr === undefined) return 0;
+
+      return +valueStr.replace(".", "").replace(",", ".");
     }
 
     return 0;
   }
 
   extractName(content: PDFExtractText[], contentIndex: number): string {
-    const { str: description } = content[+contentIndex + 2];
+    const { str: description } = content[+contentIndex + 7];
 
     return description;
   }

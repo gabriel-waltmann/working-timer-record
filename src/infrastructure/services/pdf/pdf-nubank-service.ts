@@ -67,7 +67,7 @@ export class PdfNubankService {
   }
 
   extractValue (content: PDFExtractText[], contentDateIndex: number): number {
-    const { str: value1 } = content[+contentDateIndex + 4 ];
+    const { str: value1 } = content[+contentDateIndex + 6 ];
 
     if (value1.includes("R$")) {
       return +value1.replace("R$", "").replace(".", "").replace(",", ".");
@@ -83,7 +83,7 @@ export class PdfNubankService {
   }
 
   extractName(content: PDFExtractText[], contentIndex: number): string | null {
-    const { str: name } = content[+contentIndex + 2]
+    const { str: name } = content[+contentIndex + 4]
 
     return name;
   }
